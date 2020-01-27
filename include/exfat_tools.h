@@ -66,6 +66,7 @@ void boot_calc_checksum(unsigned char *sector, unsigned short size,
 int exfat_get_blk_dev_info(struct exfat_user_input *ui,
 		struct exfat_blk_dev *bd);
 ssize_t exfat_read(int fd, void *buf, size_t size, off_t offset);
+ssize_t exfat_write(int fd, void *buf, size_t size, off_t offset);
 
 int utf16_to_utf8(char *output, const __le16 *input, size_t outsize,
 		size_t insize);

@@ -182,6 +182,11 @@ ssize_t exfat_read(int fd, void *buf, size_t size, off_t offset)
 	return pread(fd, buf, size, offset);
 }
 
+ssize_t exfat_write(int fd, void *buf, size_t size, off_t offset)
+{
+	return pwrite(fd, buf, size, offset);
+}
+
 int exfat_convert_char_to_utf16s(char *src, size_t src_len, char *dest,
 		size_t dest_len)
 {
@@ -234,4 +239,21 @@ int exfat_convert_utf16s_to_char(char *src, size_t src_len, char *dest,
 	iconv_close(it);
 
 	return dest_len;
+}
+
+int exfat_read_sector(struct exfat_blk_dev *bd, void *buf,
+		unsigned int sec_off)
+{
+	int bytes;
+	unsigned long long offset = sec_off * bd->sector_size;
+
+	lseek(bd->dev_fd, offset, SEEK_SET);
+	bytes = read(bd->dev_fd, buf, bd->sector_size);
+	if (bytes != bd->sector_size) {
+		exfat_msg(EXFAT_ERROR,
+			"write failed, sec_off : %u, bytes : %d\n", sec_off,
+			bytes);
+		return -1;
+	}
+	return 0;
 }
